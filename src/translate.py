@@ -34,6 +34,7 @@ def store_to_s3(body_text):
         }
     try:
         # TODO: handle "null" for rain and snow
+        print(f"cities found {len(data['list'])}")
         for city in data['list']:
             t = dt.datetime.fromtimestamp(city['dt'], dt.timezone.utc)
             city['timestamp'] = t.isoformat(sep='T')
@@ -62,6 +63,6 @@ def store_to_s3(body_text):
             'body': m
         }
         
-def lambda_handler(event, context):
+def translate(event, context):
     for rec in event['Records']:
         store_to_s3(rec['body'])

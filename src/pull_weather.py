@@ -23,7 +23,7 @@ def get_path(north, west, south, east, scale):
 
 def pull(north, west, south, east, scale = 100):
     client = http.client.HTTPConnection(HOST)
-    x = get_path(north, west, south, east, scale)
+
     request = client.request("GET",get_path(north, west, south, east, scale))
     response = client.getresponse()
     add_to_queue(response.read())
@@ -46,3 +46,4 @@ def env_pull(event, message):
     west = float(os.environ.get("WEST"))
     scale = int(os.environ.get("SCALE"))
     pull(north, west, south, east, scale)
+
