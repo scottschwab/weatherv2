@@ -1,0 +1,92 @@
+{
+    "mappings" : {
+        "openWeather": {
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "dt": {
+                    "type": "date"
+                },
+                "name": {
+                    "type": "text"
+                },
+                "coord": {
+                    "type": "geo_point"
+                },
+                "main": {
+                    "properties": {
+                        "temp": {
+                            "type": "float"
+                        },
+                        "temp_min": {
+                            "type": "float"
+                        },
+                        "temp_max": {
+                            "type": "float"
+                        },
+                        "pressure": {
+                            "type": "float"
+                        },
+                        "humidity": {
+                            "type": "float"
+                        }
+                    }
+                },
+                "visibility": {
+                    "type":"integer"
+                },
+                "wind": {
+                    "properties": {
+                        "speed": {
+                            "type": "float"
+                        },
+                        "deg": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "rain": {
+                    "properties": {
+                        "1h": {
+                            "type": "float"
+                        }
+                    }
+                },
+                "snow": {
+                    "properties": {
+                        "1h": {
+                            "type": "float"
+                        }
+                    }
+                },
+                "clouds": {
+                    "properties": {
+                        "today": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "weather": {
+                    "properties": {
+                        "id": {
+                            "type": "integer"
+                        },
+                        "main": {
+                            "type": "text"
+                        },
+                        "description": {
+                            "type": "text"
+                        },
+                        "icon": {
+                            "type": "text"
+                        }
+                    }
+                },
+                "timestamp": {
+                    "type": "date"
+                }
+            }
+        }
+    }
+}
