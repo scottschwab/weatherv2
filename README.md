@@ -52,8 +52,8 @@ the data, instead of requiring previous to s3 prep work.
 * IAM user name: `demo.elastic`
 
 ## View collected weather data
-Kibana: https://search-elastic-1-43l4n5p5ht73jjobi7ba6te634.us-east-1.es.amazonaws.com/_plugin/kibana/
-ElasticSearch: https://search-elastic-1-43l4n5p5ht73jjobi7ba6te634.us-east-1.es.amazonaws.com/
+* Kibana: https://search-elastic-1-43l4n5p5ht73jjobi7ba6te634.us-east-1.es.amazonaws.com/_plugin/kibana/
+* ElasticSearch: https://search-elastic-1-43l4n5p5ht73jjobi7ba6te634.us-east-1.es.amazonaws.com/
 
 ## Deployment
 1. cd into the src directory.
