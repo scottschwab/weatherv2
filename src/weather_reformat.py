@@ -10,12 +10,12 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 def send_to_sqs(body):
-    client = boto3.client("sqs")
-    queues = client.list_queues(QueueNamePrefix = os.environ.get("QUEUE_NAME"))
-    queue_url = queues['QueueUrls'][0]
+    client = boto3.client("sqs")    
+    resource = boto3.resource("sqs")
+    queue = resource.get_queue_by_name(QueueName=os.getenv("QUEUE_NAME"))
     response = client.send_message(
         MessageBody = json.dumps(body),
-        QueueUrl = queue_url,
+        QueueUrl = queue.url,
         DelaySeconds = 0
     )
     #print(response)
@@ -27,12 +27,13 @@ def format(city):
     t = dt.datetime.fromtimestamp(city['dt'], dt.timezone.utc)
     city['timestamp'] = t.isoformat(sep='T')
     city['dt'] = int(city['dt']) * 1000
-    lat = city['coord']['Lat']
-    lon = city['coord']['Lon']
-    city['coord'].pop('Lat')
-    city['coord'].pop('Lon')
-    city['coord']['lat'] = lat
-    city['coord']['lon'] = lon
+    if 'Lat' in city['coord']:
+        lat = city['coord']['Lat']
+        lon = city['coord']['Lon']
+        city['coord'].pop('Lat')
+        city['coord'].pop('Lon')
+        city['coord']['lat'] = lat
+        city['coord']['lon'] = lon
     city['main']['temp'] = to_f(city['main']['temp'])
     city['main']['temp_min'] = to_f(city['main']['temp_min'])
     city['main']['temp_max'] = to_f(city['main']['temp_max'])

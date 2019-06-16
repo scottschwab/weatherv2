@@ -1,5 +1,9 @@
-import os
-import json
+"""
+ These are unit test for the get_weather calls, but since
+ mocking the sqs and http request do not play nice, not
+ testing the methods that need both.
+
+"""
 import boto3
 import pytest
 
@@ -7,13 +11,6 @@ from moto import mock_sqs
 
 
 import get_weather as gw
-
-
-#
-# These are unit test for the get_weather calls, but since
-# mocking the sqs and http request do not play nice, not
-# testing the methods that need both.
-#
 
 AWS_REGION = 'us-east-1'
 REQUEST_PATH = "/data/2.5/box/city"

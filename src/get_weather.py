@@ -24,7 +24,7 @@ def get_path(north, west, south, east, scale):
 def add_to_queue(message):
     client = boto3.client("sqs")    
     resource = boto3.resource("sqs")
-    queue  = resource.get_queue_by_name(QueueName=os.environ["QUEUE_NAME"])
+    queue  = resource.get_queue_by_name(QueueName=os.getenv("QUEUE_NAME"))
     response = client.send_message(
         MessageBody = str(message, 'utf-8'),
         QueueUrl = queue.url,
