@@ -55,6 +55,7 @@ The current implementation is:
 * To query directory ` curl --header "Content-type: application/json" -XGET https://search-elastic-1-43l4n5p5ht73jjobi7ba6te634.us-east-1.es.amazonaws.com/weather_v5/_search -d"{\"query\": { \"match\": { \"name\": \"Jacksonville\" }}}"`, see https://www.elastic.co/guide/en/elasticsearch/reference/current/query-filter-context.html for details.
 
 ## TODO:
-1. Improve unit testing, including the mocking of http request and sms queue.
-2. Bulk upload of historical data to show searching of larger datasets.
+1. Add testing for send_to_es.py.
+2. Figure out how to test with both http mock and s3 mode
+3. Bulk upload of historical data to show searching of larger datasets.
 
