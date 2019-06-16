@@ -34,9 +34,15 @@ def send_body_to_es(body):
         body_json = json.loads(body)
         url = f"https://{os.getenv('ES_HOST')}/{INDEX_PATH}"
         if 'unique_insert_key' in body_json:
-            url = f"{url}/_doc/{body_json['unique_insert_key']}"
-        response = requests.post(url, auth=AWSAUTH, json=body_json, 
-            headers=HEADERS)
+            url = f"{url}/{body_json['unique_insert_key']}/_create"
+            print(url)
+            response = requests.put(url, auth=AWSAUTH, json=body_json, 
+                headers=HEADERS)
+        else:
+            response = requests.post(url, auth=AWSAUTH, json=body_json, 
+                headers=HEADERS)
+                
+        print(response)
     except Exception as err:
         print(err)
         m = f"Unable to store data due to {err}"
