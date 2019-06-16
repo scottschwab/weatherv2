@@ -21,6 +21,16 @@ def get_appid():
 def get_path(north, west, south, east, scale):
     return f"{REQUEST_PATH}?{get_bbox(north, west, south, east, scale)}&{get_appid()}"
 
+def add_to_queue(message):
+    client = boto3.client("sqs")    
+    resource = boto3.resource("sqs")
+    queue  = resource.get_queue_by_name(QueueName=os.environ["QUEUE_NAME"])
+    response = client.send_message(
+        MessageBody = str(message, 'utf-8'),
+        QueueUrl = queue.url,
+        DelaySeconds = 0
+    )
+
 def pull(north, west, south, east, scale = 100):
     client = http.client.HTTPConnection(HOST)
 
@@ -28,21 +38,12 @@ def pull(north, west, south, east, scale = 100):
     response = client.getresponse()
     add_to_queue(response.read())
 
-def add_to_queue(message):
-    client = boto3.client("sqs")
-    queues = client.list_queues(QueueNamePrefix = os.environ.get("QUEUE_NAME"))
-    queue_url = queues['QueueUrls'][0]
-    response = client.send_message(
-        MessageBody = str(message, 'utf-8'),
-        QueueUrl = queue_url,
-        DelaySeconds = 0
-    )
 
 
 def env_pull(event, message):
-    north = float(os.environ.get("NORTH"))
-    south = float(os.environ.get("SOUTH"))
-    east = float(os.environ.get("EAST"))
-    west = float(os.environ.get("WEST"))
-    scale = int(os.environ.get("SCALE"))
+    north = float(os.environ["NORTH"])
+    south = float(os.environ["SOUTH"])
+    east = float(os.environ["EAST"])
+    west = float(os.environ["WEST"])
+    scale = int(os.environ["SCALE"])
     pull(north, west, south, east, scale)
