@@ -1,6 +1,8 @@
 import json
 import boto3
 from moto import mock_sqs
+import sys
+
 import weather_reformat as wf
 
 AWS_REGION = 'us-east-1'

@@ -6,9 +6,8 @@
 """
 import boto3
 import pytest
-
+import sys
 from moto import mock_sqs
-
 
 import get_weather as gw
 
