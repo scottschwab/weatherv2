@@ -61,7 +61,7 @@ The current implementation is:
 4. Bulk upload of historical data to show searching of larger datasets.
 
 ## Primary Packages Used
-boto3: AWS library
-moto: SQS mocking
-pytest: Test framework
+* boto3: AWS library
+* moto: SQS mocking
+* pytest: Test framework
 
