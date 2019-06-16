@@ -18,9 +18,10 @@ def send_to_sqs(body):
         QueueUrl = queue_url,
         DelaySeconds = 0
     )
+    #print(response)
 
 def to_f(c):
-    return c * 9 / 5.0 + 32
+    return round(c * 9 / 5.0 + 32, 1)
 
 def format(city):
     t = dt.datetime.fromtimestamp(city['dt'], dt.timezone.utc)
@@ -35,6 +36,7 @@ def format(city):
     city['main']['temp'] = to_f(city['main']['temp'])
     city['main']['temp_min'] = to_f(city['main']['temp_min'])
     city['main']['temp_max'] = to_f(city['main']['temp_max'])
+    city['unique_insert_key'] = city['dt'] + city['id']
     return city
 
 def format_and_send(body):
@@ -47,8 +49,6 @@ def format_and_send(body):
             'body': m
         }
     try:
-        # TODO: handle "null" for rain and snow
-        print(f"Processing {len(data[list])} cities")
         for city in data['list']:
             city_out = format(city)
             send_to_sqs(city_out)
@@ -64,7 +64,18 @@ def format_and_send(body):
             'body': m
         }
 
-
 def translate(event, context):
+    resource = boto3.resource('sqs')
+    client = boto3.client('sqs')
+
     for rec in event['Records']:
         format_and_send(rec['body'])
+
+        # should not be needed, goin by the docs, but removing processed message
+        qn = rec['eventSourceARN'].split(':')[-1]
+        queue = resource.get_queue_by_name(QueueName=qn)
+        client.delete_message(
+            QueueUrl=queue.url,
+            ReceiptHandle=rec['receiptHandle']
+        )
+    return

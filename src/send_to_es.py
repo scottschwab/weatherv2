@@ -31,11 +31,14 @@ INDEX_PATH = f"{os.getenv('ES_INDEX')}/{os.getenv('ES_INDEX_TYPE')}"
 def send_body_to_es(body):
     try:
         logging.debug(body)
+        body_json = json.loads(body)
         url = f"https://{os.getenv('ES_HOST')}/{INDEX_PATH}"
-        response = requests.post(url, auth=AWSAUTH, json=json.loads(body), 
+        if 'unique_insert_key' in body_json:
+            url = f"{url}/_doc/{body_json['unique_insert_key']}"
+        response = requests.post(url, auth=AWSAUTH, json=body_json, 
             headers=HEADERS)
-        print(response)
     except Exception as err:
+        print(err)
         m = f"Unable to store data due to {err}"
         logger.error(m)
         return {
@@ -44,5 +47,15 @@ def send_body_to_es(body):
         }    
 
 def send_to_es(event, context):
+    resource = boto3.resource('sqs')
+    client = boto3.client('sqs')
+    print("number of records " + str(len(event['Records'])))
     for rec in event['Records']:
         send_body_to_es(rec['body'])
+        qn = rec['eventSourceARN'].split(':')[-1]
+        queue = resource.get_queue_by_name(QueueName=qn)
+        client.delete_message(
+            QueueUrl=queue.url,
+            ReceiptHandle=rec['receiptHandle']
+        )
+    return 

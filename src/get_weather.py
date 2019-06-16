@@ -46,4 +46,3 @@ def env_pull(event, message):
     west = float(os.environ.get("WEST"))
     scale = int(os.environ.get("SCALE"))
     pull(north, west, south, east, scale)
-

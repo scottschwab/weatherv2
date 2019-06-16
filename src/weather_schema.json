@@ -85,6 +85,9 @@
                 },
                 "timestamp": {
                     "type": "date"
+                },
+                "unique_insert_key": {
+                    "type": "text"
                 }
             }
         }
