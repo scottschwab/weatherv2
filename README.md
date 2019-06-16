@@ -72,3 +72,4 @@ the data, instead of requiring previous to s3 prep work.
 ## TODO:
 1. Improve unit testing, including the mocking of http request and sms queue.
 2. Bulk upload of historical data to show searching of larger datasets.
+

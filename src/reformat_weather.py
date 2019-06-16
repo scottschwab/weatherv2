@@ -34,23 +34,32 @@ def store_to_s3(body_text):
         }
     try:
         # TODO: handle "null" for rain and snow
+        # remove duplicate entries in input
+        known_entries = list()
         print(f"cities found {len(data['list'])}")
         for city in data['list']:
             t = dt.datetime.fromtimestamp(city['dt'], dt.timezone.utc)
-            city['timestamp'] = t.isoformat(sep='T')
-            city['dt'] = int(city['dt']) * 1000
-            lat = city['coord']['Lat']
-            lon = city['coord']['Lon']
-            city['coord'].pop('Lat')
-            city['coord'].pop('Lon')
-            city['coord']['lat'] = lat
-            city['coord']['lon'] = lon
-            
             name = f"in_{city['id']}_{t}.{postfix}"
             name = name.replace(' ', '_')
-            s3.Object(bucket, name).put(
-                Body=json.dumps(city, indent=2).encode('utf-8')
-            )    
+            if name in known_entries:
+                logging.warning(f"entry {name} is duplicate")
+            else:
+                city['timestamp'] = t.isoformat(sep='T')
+                city['dt'] = int(city['dt']) * 1000
+                lat = city['coord']['Lat']
+                lon = city['coord']['Lon']
+                city['coord'].pop('Lat')
+                city['coord'].pop('Lon')
+                city['coord']['lat'] = lat
+                city['coord']['lon'] = lon
+                city['main']['temp'] =     city['main']['temp']     * 9 / 5.0 + 32
+                city['main']['temp_min'] = city['main']['temp_min'] * 9 / 5.0 + 32
+                city['main']['temp_max'] = city['main']['temp_max'] * 9 / 5.0 + 32
+                city['weather'] = city['weather'][:1]
+                s3.Object(bucket, name).put(
+                    Body=json.dumps(city, indent=2).encode('utf-8')
+                )
+                known_entries.append(name)    
         return {
             'statusCode': 200,
             'body': f"Stored {data['cnt']} weather events at {now}"
