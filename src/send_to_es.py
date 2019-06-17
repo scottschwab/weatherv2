@@ -1,3 +1,7 @@
+"""
+Given a json document from a SQS queue, it is placed
+on an AWS ES server. 
+"""
 import json
 import logging
 import os
@@ -29,6 +33,12 @@ HEADERS = { 'Content-Type' : 'application/json'}
 INDEX_PATH = f"{os.getenv('ES_INDEX')}/{os.getenv('ES_INDEX_TYPE')}"
 
 def send_body_to_es(body):
+    """Given a json document, based on environmental variables,
+       the document is pushed to the ES endpoint.  If the 
+       'unique_insert_key' is defined, it is used as the
+       document id, to insure that only one copy of the 
+       document is placed in ES.
+    """ 
     try:
         logging.debug(body)
         body_json = json.loads(body)
@@ -53,11 +63,20 @@ def send_body_to_es(body):
         }    
 
 def send_to_es(event, context):
+    """This is the lambda entry point, which sends the
+       document to be put in ES and removes the message
+       from the queue.
+    """
+
     resource = boto3.resource('sqs')
     client = boto3.client('sqs')
     print("number of records " + str(len(event['Records'])))
     for rec in event['Records']:
         send_body_to_es(rec['body'])
+    
+        # Going by documentation, removing the message from 
+        # the queue should not be required, but from testing
+        # it is needed.
         qn = rec['eventSourceARN'].split(':')[-1]
         queue = resource.get_queue_by_name(QueueName=qn)
         client.delete_message(
